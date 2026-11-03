@@ -13,6 +13,7 @@ CodeMeet is an integrated platform for conducting, practicing, and evaluating te
 **CodeMeet** is developed by **Team NAVAYUG** with the vision of transforming the traditional technical interview experience through **real-time collaboration and Artificial Intelligence**.
 
 ## Team-Members
-01-Rohit Singh
-02-Nand Gopal Sharma
+
+01 - Rohit Singh
+02 - Nand Gopal Sharma
 ---
