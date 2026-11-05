@@ -1,9 +1,41 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
+import socket from "../../services/socket";
 
 function CodeEditor() {
   const [language, setLanguage] = useState("javascript");
-  const [code, setCode] = useState("");
+
+  const editorRef = useRef(null);
+  const isRemoteChange = useRef(false);
+
+  // Receive code from another participant
+  useEffect(() => {
+    function handleCodeUpdated(data) {
+      if (!editorRef.current) return;
+      isRemoteChange.current = true;
+      editorRef.current.setValue(data.code);
+      isRemoteChange.current = false;
+    }
+
+    socket.on("code:updated", handleCodeUpdated);
+
+    return () => {
+      socket.off("code:updated", handleCodeUpdated);
+    };
+  }, []);
+
+  // Store Monaco editor instance
+  function handleEditorMount(editor) {
+    editorRef.current = editor;
+  }
+
+  // Handle local typing
+  function handleEditorChange(value) {
+    if (isRemoteChange.current) return;
+    socket.emit("code:update", {
+      code: value || ""
+    });
+  }
 
   return (
     <section className="editor-panel">
@@ -36,8 +68,9 @@ function CodeEditor() {
         height="500px"
         language={language}
         theme="vs-dark"
-        value={code}
-        onChange={(value) => setCode(value || "")}
+        defaultValue=""
+        onMount={handleEditorMount}
+        onChange={handleEditorChange}
         options={{
           fontSize: 15,
           minimap: { enabled: false },
