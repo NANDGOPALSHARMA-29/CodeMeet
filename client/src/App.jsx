@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import socket from "./services/socket";
 import "./App.css";
 import CodeEditor from "./features/editor/CodeEditor";
+import VideoCall from "./features/video/VideoCall";
 
 function App() {
   const [connected, setConnected] = useState(false);
@@ -10,6 +11,7 @@ function App() {
   const [roomInput, setRoomInput] = useState("");
   const [participants, setParticipants] = useState(0);
   const [message, setMessage] = useState("");
+  const [isInitiator, setIsInitiator] = useState(false);
 
   useEffect(() => {
     function handleConnect() {
@@ -24,17 +26,29 @@ function App() {
       setMessage("Disconnected from server. Please reconnect.");
     }
     // Room created successfully
+    // function handleRoomCreated(data) {
+    //   setRoomId(data.roomId);
+    //   setParticipants(data.participants);
+    //   setMessage("Room created successfully!");
+    // }
     function handleRoomCreated(data) {
-      setRoomId(data.roomId);
-      setParticipants(data.participants);
-      setMessage("Room created successfully!");
-    }
+  setRoomId(data.roomId);
+  setParticipants(data.participants);
+  setIsInitiator(true);
+  setMessage("Room created successfully!");
+}
      // Room joined successfully
+    // function handleRoomJoined(data) {
+    //   setRoomId(data.roomId);
+    //   setParticipants(data.participants);
+    //   setMessage("Joined room successfully!");
+    // }
     function handleRoomJoined(data) {
-      setRoomId(data.roomId);
-      setParticipants(data.participants);
-      setMessage("Joined room successfully!");
-    }
+  setRoomId(data.roomId);
+  setParticipants(data.participants);
+  setIsInitiator(false);
+  setMessage("Joined room successfully!");
+}
      // Room error
     function handleRoomError(data) {
       setMessage(data.message);
@@ -100,7 +114,7 @@ function App() {
   // Leave current room
   function leaveRoom() {
     socket.emit("room:leave");
-
+    setIsInitiator(false);
     setRoomId("");
     setParticipants(0);
     setMessage("You left the room.");
@@ -207,8 +221,23 @@ function App() {
             {message && (
               <p className="message">{message}</p>
             )}
+            <div className="workspace-content">
 
-            <CodeEditor />
+  {/* Left: Video Section */}
+  <aside className="video-column">
+  <VideoCall
+    roomId={roomId}
+    participants={participants}
+    isInitiator={isInitiator}
+  />
+</aside>
+
+  {/* Right: Code Editor */}
+  <div className="editor-column">
+    <CodeEditor />
+  </div>
+
+</div>
 
           </section>
         )}

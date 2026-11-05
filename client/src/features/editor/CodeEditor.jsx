@@ -67,8 +67,9 @@ function CodeEditor() {
       <Editor
         height="500px"
         language={language}
-        theme="vs-dark"
+        theme="vs"
         defaultValue=""
+
         onMount={handleEditorMount}
         onChange={handleEditorChange}
         options={{

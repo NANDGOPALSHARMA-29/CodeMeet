@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const registerRoomHandlers = require("./room.handlers");
-
+const registerCallHandlers = require("./call.handlers");
 
 function initializeSocket(httpServer) {
   const io = new Server(httpServer, {
@@ -13,7 +13,8 @@ function initializeSocket(httpServer) {
     console.log("Client connected:", socket.id);
 
     registerRoomHandlers(io, socket, rooms);
-
+    registerCallHandlers(io, socket);
+    
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);
     });
