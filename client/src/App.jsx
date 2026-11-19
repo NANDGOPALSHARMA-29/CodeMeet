@@ -12,6 +12,7 @@ function App() {
   const [participants, setParticipants] = useState(0);
   const [message, setMessage] = useState("");
   const [isInitiator, setIsInitiator] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     function handleConnect() {
@@ -120,6 +121,7 @@ function App() {
     setIsInitiator(false);
     setRoomId("");
     setParticipants(0);
+    setCopied(false);
     setMessage("You left the room.");
   }
 
@@ -127,6 +129,10 @@ function App() {
   async function copyRoomId() {
     try {
       await navigator.clipboard.writeText(roomId);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
       setMessage("Room ID copied!");
     } catch {
       setMessage("Could not copy Room ID. Please copy it manually.");
@@ -209,7 +215,7 @@ function App() {
               </div>
 
               <button className="copy-btn" onClick={copyRoomId}>
-                Copy ID
+                {copied ? "Copied!" : "Copy ID"}
               </button>
 
               <div className="participant-info">
