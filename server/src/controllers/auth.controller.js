@@ -113,11 +113,28 @@ const loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
     // 5. Send response
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Login successful",
+    //   token,
+    //   user: {
+    //     id: user._id,
+    //     name: user.name,
+    //     email: user.email,
+    //     role: user.role,
+    //   },
+    // });
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -125,6 +142,7 @@ const loginUser = async (req, res) => {
         role: user.role,
       },
     });
+
   } catch (error) {
     console.error("Login error:", error);
 
@@ -136,4 +154,39 @@ const loginUser = async (req, res) => {
 };
 
 
-module.exports = { registerUser, loginUser };
+const getCurrentUser = async (req, res) => {
+  try {
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Get current user error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+};
+
+
+module.exports = { registerUser, loginUser , getCurrentUser, logoutUser};
