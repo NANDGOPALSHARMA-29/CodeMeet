@@ -4,6 +4,10 @@ import "./App.css";
 import CodeEditor from "./features/editor/CodeEditor";
 import VideoCall from "./features/video/VideoCall";
 import LandingPage from "./landing/LandingPage";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 function CollaborationApp() {
   const [connected, setConnected] = useState(false);
@@ -252,14 +256,37 @@ function CollaborationApp() {
   );
 }
 
+// function App() {
+//   const [showWorkspace, setShowWorkspace] = useState(false);
+
+//   if (!showWorkspace) {
+//     return <LandingPage onGetStarted={() => setShowWorkspace(true)} />;
+//   }
+
+//   return <CollaborationApp />;
+// }
+
 function App() {
-  const [showWorkspace, setShowWorkspace] = useState(false);
-
-  if (!showWorkspace) {
-    return <LandingPage onGetStarted={() => setShowWorkspace(true)} />;
-  }
-
-  return <CollaborationApp />;
+  const navigate = useNavigate();
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <LandingPage
+            onGetStarted={() => navigate("/login")}
+          />
+        }
+      />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/workspace" element={<CollaborationApp />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
 export default App;
