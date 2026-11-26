@@ -14,10 +14,10 @@ const startServer = async () => {
   try {
     await connectDB();
     httpServer.listen(PORT, () => {
-      console.log(`CodeMeet server running on port ${PORT}`);
+      console.log(`CodeMeet server running on port no ${PORT}`);
     });
   } catch (error) {
-    console.error("Server startup failed:", error.message);
+    console.error("Server startup failed Error:", error.message);
     process.exit(1);
   }
 };

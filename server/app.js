@@ -22,7 +22,7 @@ app.use("/api/rooms", roomRoutes);
 
 app.get("/", (req, res) => {
   res.json({
-    message: "CodeMeet server is running",
+    message: "CodeMeet server is running successfully",
   });
 });
 
