@@ -102,21 +102,6 @@ function registerRoomHandlers(io, socket, rooms) {
   socket.on("disconnect", () => {
     leaveRoom(true);
   });
-
-  // Collaborative Code Synchronization
-socket.on("code:update", (data) => {
-    const roomId = socket.data.roomId;
-
-    // User must be in a room
-    if (!roomId || typeof data?.code !== "string") {
-        return;
-    }
-
-    // Send updated code to other room members
-    socket.to(roomId).emit("code:updated", {
-        code: data.code
-    });
-});
 }
 
 module.exports = registerRoomHandlers;
